@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>支付</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+<link href="__PUBLIC__/css/style.css" rel="stylesheet">
+<link href="__PUBLIC__/css/iconfont/iconfont.css" rel="stylesheet">
+	<style>
+		.page-header{
+			height: 40px;
+			width:100%;
+			background-color: #d6e6b5;
+			margin:0;
+			top:0px;
+			position:fixed;
+			z-index:3
+		}
+	</style>
+</head>
+<body class="bgf7">
+<header class="page-header">
+	<div class="container" style="margin-top:8px;">
+		在汉口北
+	</div>
+</header>
+<div class="container" style="margin-top:40px;">
+	<div class="row">
+		<div class="col-xs-12 clearPadding">
+			<div class="col-xs-12 clearPadding">
+				<div class="bg-white ptb10 plr15 clearfix borderbottom">
+					<div class="col-xs-12 clearPadding clearfix">
+						<div class="col-xs-2 clearPadding">联系人</div>
+						<div class="col-xs-10 clearPadding borderbottom pb5">
+							<input type="text" value="" placeholder="你的姓名" class='bordernone w100' name="name">
+						</div>
+					</div>
+				</div>
+				<div class="bg-white ptb10 plr15 clearfix borderbottom">
+					<div class="col-xs-2 clearPadding">联系电话</div>
+					<div class="col-xs-10 pr0 clearPadding borderbottom pb5">
+						<input type="tel" value="" placeholder="联系电话" class='bordernone w100' name="tel">
+					</div>
+				</div>
+				<div class="bg-white ptb10 plr15 clearfix">
+					<div class="col-xs-2 clearPadding">收货地址</div>
+					<div class="col-xs-10 pr0 clearPadding borderbottom pb5">
+						<input type="text" value="" placeholder="详细地址" class='bordernone w100' name="address">
+					</div>
+				</div>
+				<!----------------购物详情------------>
+				<div class="mt15 bg-white golist">
+
+				</div>
+			<div class="mt10 bg-white">
+				<div id="paystyle">
+					<div class="ptb10 plr15 borderbottom">
+						<span>货到付款</span><i class="iconfont pull-right text-dining">&#xe609;</i>
+					</div>
+					<div class="ptb10 plr15 borderbottom">
+						<span>微信支付</span><i class="iconfont pull-right text-grey">&#xe609;</i>
+					</div>
+				</div>					
+					<div class="ptb10 plr15 borderbottom">
+						<div class="pb10">订单备注</div>
+						<textarea name="beizhu" id="" cols="10" rows="3" class="form-control font12" placeholder="请输入您要交待给我们的事情" style="resize: none"></textarea>
+					</div>										
+				<br/>
+				<br/>
+				<br/>
+			</div>
+					
+			<div class="pl15 clearfix bg-white bordertop mt10 bottoms">
+				<div class="col-xs-7 clearPadding text-dining pt18">总价：￥<span id="totle">0</span></div>
+				<div class="col-xs-5 clearPadding">
+					<button class="bg-dining bordernone ptb15lr20 font18 btn-block text-white" type="submit">确认下单</button>
+				</div>
+			</div>
+		</div>				
+	</div>
+</div>
+<script src="__PUBLIC__/js/jquery-2.1.4.min.js"></script>
+	<script src="__PUBLIC__/js/jquery.cookie.js"></script>
+<script>
+	//支付方式选择
+$('#paystyle div').click(function(){
+	$(this).find('i').addClass('text-dining').removeClass('text-grey');
+	$(this).siblings().find('i').removeClass('text-dining').addClass('text-grey');
+});
+	//读取json到列表
+	//goslist是缓存的订单详情
+	var infos = JSON.parse($.cookie('golist'));
+	var totle = parseInt($("#totle").text());
+	$.each(infos,function (i) {
+		totle=totle+infos[i].goodsnum*infos[i].dj;
+		$(".golist").append('<div class="plr15 ptb10 clearfix bg-white borderbottom">\
+				<div class="col-xs-5 clearPadding">'+infos[i].proname+'</div>\
+				<div class="col-xs-5 clearPadding">\
+				<div class="col-xs-4 oplusbox pull-left ominu">\
+						<i class="icon iconfont text-dining" style="font-size:24px;position:relative;top:-7px; left:-8px;">&#xe608;</i>\
+				</div>\
+				<div class="col-xs-4 text-center" productid='+infos[i].productid+' dj='+infos[i].dj+' goodsnum>'+infos[i].goodsnum+'</div>\
+				<div class="col-xs-4 oplusbox pull-left oplus">\
+						<i class="icon iconfont text-dining" style="font-size:24px;position:relative;top:-5px; left:-11px">&#xe605;</i>\
+				</div>\
+				</div>\
+				<div class="col-xs-2 clearPadding text-right" dj>'+infos[i].dj+'</div>\
+				</div>');
+	})
+	$("#totle").text(totle);
+	$(document).on("click",".oplus",function () {
+			var num = $(this).prev("div").text();
+			num++;
+			$(this).prev("div").text(num);
+			var totle = parseInt($("#totle").text());
+			var ad = parseInt($(this).prev("div").attr("dj"));
+			totle+=ad;
+			$("#totle").text(totle);
+
+	})
+	$(document).on("click",".ominu",function () {
+		var num = $(this).next("div").text();
+		num--;
+		var totle = parseInt($("#totle").text());
+		if(num==0){
+			$(this).next("div").text(num);
+			var ad = parseInt($(this).next("div").attr("dj"));
+			totle-=ad;
+			$(this).parent().parent().remove();
+		}else{
+			$(this).next("div").text(num);
+			var ad = parseInt($(this).next("div").attr("dj"));
+			totle-=ad;
+		}
+		$("#totle").text(totle);
+	})
+	//读取
+	$(document).ready(function () {
+		var userinfo = JSON.parse($.cookie('userinfo'));
+		console.log(userinfo);
+		$('input[name=name]').val(userinfo.name);
+		$('input[name=tel]').val(userinfo.tel);
+		$('input[name=address]').val(userinfo.address);
+	})
+//提交信息
+	function submitinfo() {
+		var infos = {};
+		$("input[name]").each(function () {
+			var pram = $(this).val();
+			var pramName = $(this).attr('name');
+			infos[pramName] = pram;
+		})
+		infos["beizhu"]=$("textarea").val();
+		//info为要提交的对象
+		console.log(infos);//JSON.stringify(infos)
+		var golist=[];
+		var go={};
+		$("div[goodsnum]").each(function () {
+			go["productid"] = $(this).attr("productid");
+			go["goodsnum"] = $(this).text();
+			golist.push(go);
+		})
+		console.log(golist);
+		$.cookie('userinfo',JSON.stringify(infos), {expires: 365});//将对象转为字符串保存进cookie
+	}
+</script>
+
+</body>
+</html>

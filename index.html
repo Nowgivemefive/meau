@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>选购商品</title>
+<link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+<link href="__PUBLIC__/css/style.css" rel="stylesheet">
+<link href="__PUBLIC__/css/Font-Awesome/css/font-awesome.min.css" rel="stylesheet">
+<link href="__PUBLIC__/css/iconfont/iconfont.css" rel="stylesheet">
+	<style>
+		.page-header{
+			height: 40px;
+			width:100%;
+			background-color: #d6e6b5;
+			margin:0;
+			top:0px;
+			position:fixed;
+			z-index:3
+		}
+		.icon-font{
+			font-size:24px;
+			position:relative;
+			top:-2px;
+		}
+		.nextclass{
+			margin-top: 10px;
+			margin-bottom: 10px;
+			background-color: #F1F2F4;
+			border-radius: 25px;
+			font-size: 10px;
+			padding-top: 4px;
+			padding-bottom: 4px;
+			margin-left: 7px;
+		}
+		.allnum{
+			position: fixed;
+			left:55px;
+		}
+		.product{
+			position: relative;
+			margin-bottom: 60px;
+		}
+	</style>
+</head>
+<body>
+<header class="page-header">
+	<div class="container" style="margin-top:8px;">
+		<b style="color:#ff7d7c">公告</b>&nbsp;&nbsp;营业时间:08:00-20:00
+	</div>
+</header>
+<div class="container-fluid clearPadding" style="margin-top:40px;">
+		<div class="tabwrap clearfix">
+			<!---外卖-->
+			<div class="tabcontent col-xs-12 clearPadding">
+					<div class="col-xs-3 clearPadding" style='position:fixed'>
+						<ul class="sortlist">
+							<li class="active" psate="0"><h4>优惠套餐</h4></li>
+							<li psate="1"><h4>炒菜</h4></li>
+							<li psate="2"><h4>盖饭</h4></li>
+						</ul>
+					</div>
+					<div class="col-xs-9 clearPadding bg-white pull-right product" xh="0">
+						<volist name="res" id="go">
+						<!--good start-->		
+						<div class="clearfix ptb10 borderbf2 ogood">
+							<div class="col-xs-4 plr10">
+								<img src="http://lovehkb.com{$go.thumb}" alt="" class="pull-left img-responsive">
+							</div>
+							<div class="col-xs-8 clearPadding" style="position:relative;">
+								<div>
+									<h4 class="font14 mt0">{$go.title}</h4>
+									<div class="text-muted font10">月售{$go.sellnums}</div>
+									<p class="text-dining font14 clearMargin">￥<span class="unitprice" unitprice>{$go.marketprice}</span><span class="text-muted">&nbsp;/份</span></p>
+								</div>				
+								<div class="opmbox clearfix">
+									<div class="oplusbox pull-left ominu">
+										<i class="icon iconfont text-dining" style="font-size:24px;position:relative;top:-2px;">&#xe608;</i>
+									</div>
+									<input type="text" class="onum pull-left font12" value="0" readonly="readonly" name="onum" productid="{$go.id}" proname="{$go.title}" prostock="10" dj="{$go.marketprice}"}>
+									<div class="oplusbox pull-left oplus">
+										<i class="icon iconfont text-dining" style="font-size:24px;">&#xe605;</i>
+									</div>
+								</div>	
+							</div>
+						</div>
+						<!--good end-->
+							</volist>
+
+
+					</div>
+					<!----纵向标签页--->
+					<div class="col-xs-9 clearPadding bg-white pull-right product" style="display:none" xh="1"></div>
+					<div class="col-xs-9 clearPadding bg-white pull-right product" style="display:none" xh="2"></div>
+					<div class="col-xs-9 clearPadding bg-white pull-right product" style="display:none" xh="3"></div>
+					<div class="col-xs-9 clearPadding bg-white pull-right product" style="display:none" xh="4"></div>
+					<div class="col-xs-9 clearPadding bg-white pull-right product" style="display:none" xh="5"></div>
+			</div>
+</div>
+<!---显示购物车详情---->
+<div class="maskbox" style="z-index: 2;"></div>
+<!--显示购物车内容-->
+<div class="col-xs-12 bg-white clearPadding bordertop orderdetail" style="position:fixed;bottom:55px;z-index:3;">
+	<div class="pt4 text-muted plr15"><i class="iconfont">&#xe60d;</i><span class="font10">清空购物车</span></div>
+	<!-----详情------>
+</div>
+<!--------统计确认--------->
+<div class="bottoms obto bordertop clearfix" id="footer">
+	<div class="col-xs-3">
+		<div class="ocartbox" style="position:fixed;">
+			<div class="ocart"><i class="icon iconfont text-white" style="vertical-align:middle;font-size:2em;">&#xe607;</i></div>
+			<div class="allnum" id="allnum">0</div>
+		</div>
+	</div>
+	<div class="col-xs-5">
+		<p class="pt15"><span class="text-dining">￥</span>
+			<span class="text-dining font16" id="allprice">0</span>
+	</div>
+	<div class="col-xs-4 text-right clearPadding">
+		<button class="bg-yellow bordernone ptb15 lr20 font18 btn-block text-white" type="button" onclick="submitinfo()">去结算</button>
+	</div>
+</div>
+
+
+
+
+
+<script src="__PUBLIC__/js/jquery-2.1.4.min.js"></script>
+	<script src="__PUBLIC__/js/jquery.cookie.js"></script>
+<script>
+	//横着的标签栏
+	$('.nextclass').click(function(){
+		var index=$(this).index();
+		console.log(index);
+		$(this).css('background-color','#CCC').siblings('.nextclass').css('background-color','#F1F2F4');
+		if(index==0){
+			$("input[fl]").parent().parent().parent().show();
+		}else {
+			$("input[fl=" + index + "]").parents('.ogood').siblings('.ogood').hide();
+			$("input[fl=" + index + "]").parent().parent().parent().show();
+		}
+	});
+	//竖着的标签栏
+	$('.sortlist > li').click(function () {
+		var index = $(this).index();
+		var psate = $(this).attr('psate');
+		console.log(psate);
+		$(this).addClass("active").siblings().removeClass('active');//为被点击的元素添加样式，并去除同级元素的其他样式
+		$('.product').eq(index).show().siblings('.product').hide();
+		if($('.product').eq(index).html()=="") {
+			ajaxQuery(psate, index);
+		}
+	})
+		//查询
+		function ajaxQuery(psate,index) {
+			$.post("http://www.whazx.cn/wechat/index.php/Home/Wexin/ajax",{
+				"psate":psate
+			},function (data) {
+				//判断是否【0】处是否为空，如果不为空读出二级列表
+				var data = eval(data);
+				$('.product').eq(index).append('<div class="col-xs-12 clearPadding text-center"></div>');
+				if(data[0].length!=0){
+					$.each(data[0],function (i) {
+						var name = this.name;
+						$('.product').eq(index).append('<div class="col-xs-2 clearPadding nextclass text-center ">'+name+'</div>');
+					})
+				}
+				var u = "http://www.lovehkb.com";
+				$.each(data,function(item) {
+					if(item!=0){
+						$.each(this,function (i) {
+							$(".product").eq(index).append('\
+							<!--good start-->\
+							<div class="clearfix ptb10 borderbf2 ogood">\
+								<div class="col-xs-4 plr10">\
+									<img src='+u+this.thumb+' alt="" class="pull-left img-responsive">\
+								</div>\
+								<div class="col-xs-8 clearPadding" style="position:relative;">\
+									<div>\
+										<h4 class="font14 mt0">'+this.title+'</h4>\
+										<div class="text-muted font10">月售'+this.sellnums+'</div>\
+										<p class="text-dining font14 clearMargin">￥<span class="unitprice" unitprice>'+this.marketprice+'</span><span class="text-muted">&nbsp;/份</span></p>\
+									</div>\
+									<div class="opmbox clearfix">\
+										<div class="oplusbox pull-left ominu">\
+											<i class="icon iconfont text-dining" style="font-size:24px;position:relative;top:-2px;">&#xe608;</i>\
+										</div>\
+										<input type="text" class="onum pull-left font12" value="0" readonly="readonly" name="onum" productid='+this.id+' fl='+this.pcate+' proname='+this.title+' prostock="100" dj='+this.marketprice+'>\
+										<div class="oplusbox pull-left oplus">\
+											<i class="icon iconfont text-dining" style="font-size:24px;">&#xe605;</i>\
+										</div>\
+									</div>\
+								</div>\
+							</div>\
+					<!--good end-->\
+					')
+						})
+					}
+				})
+			})
+
+		}
+	//底部统计
+	function setTotal(){
+		var allprice=0;
+		var allnum=0;
+		$(".cartgoods").each(function(){
+			var num=parseInt($(this).find('input[name=onum]').val());
+			var price=$(this).find('[unitprice]').text();
+			allprice+=num*price;
+			allnum+=num;
+		});
+		$("#allprice").html(allprice.toFixed(2));//显示总价格toFixed，并四舍五入
+		$("#allnum").html(allnum);//显示总数量
+	}
+	//点击购物车显示和隐藏清单
+	$('.maskbox').height($(document).height());
+		$(".orderdetail").hide();
+		$(".ocartbox,.maskbox").click(function(){
+		$(".maskbox").fadeToggle(300);
+		$(".orderdetail").slideToggle(300);
+	});
+	//清空购物车
+		$('.pt4>.font10').click(function () {
+			$('.orderdetail>.cartgoods').remove();
+			$('input[name=onum]').each(function() {
+				$('input[name=onum]').val(0);
+				setTotal();
+			})
+		})
+	//新建结点
+/*
+* 获取商品名称 数量 并新建结点
+* */
+
+	//增加商品数量
+	$(".product").on("click",".oplus",function(){
+		//获取商品信息
+		var productid = $(this).prev().attr('productid');
+		var proname = $(this).prev().attr('proname');
+		var prostock = $(this).prev().attr('prostock');
+		var dj = $(this).prev().attr('dj');
+		//创建新的结点
+		if($("input[productid ="+productid+" ]").length==1){
+			$(".orderdetail").append('<div class="clearfix borderbottom ptb10 plr15 cartgoods">\
+			<div class="col-xs-6 clearPadding">'+proname+'</div>\
+					<div class="col-xs-6 clearPadding text-right">\
+					<div class="pmbox pull-right plusu"><i class="icon iconfont text-dining" style="font-size:24px;position:relative;top:2px;">&#xe605;</i></div>\
+			<input type="text" class="onum pull-right font12" value="0" readonly="readonly" name="onum" productid='+productid+' proname='+proname+' dj='+dj+'>\
+					<div class="pmbox pull-right minu"><i class="icon iconfont text-dining" style="font-size:24px;">&#xe608;</i></div>\
+			<div class="pricebox pull-right mr15 lh24 text-dining">￥<span unitprice>'+dj+'</span></div>\
+					</div>\
+					</div>');
+		}
+		//获取要加的值
+		var num = parseInt($(this).prev().val())+1;
+		if (num<=prostock) {
+			$("input[productid =" + productid + " ]").val(num);
+			setTotal();
+		}else{
+			alert("抱歉库存不足");
+		}
+
+	})
+	$(".orderdetail").on("click",".plusu",function(){
+		var num = parseInt($(this).next().val())+1;
+		var productid = $(this).next().attr('productid');
+		var prostock = $("input[productid =" + productid + " ]").attr("prostock");
+		if(num<=prostock){
+		$("input[productid =" + productid + " ]").val(num);
+		setTotal();
+		}else{
+			alert("抱歉,库存不足");
+		}
+
+	})
+	//减少商品数量
+	$(".product").on("click",".ominu",function(){
+		var productid = $(this).next().attr('productid');
+		//获取要减的值
+		var num = parseInt($(this).next().val());
+		if(num>0) {
+			num--;
+			if(num==0&&$("input[productid ="+productid+" ]").length==2){
+				//删除结点
+				$("input[productid ="+productid+" ]:last").parent().parent().remove();
+			}
+		}
+		$("input[productid ="+productid+" ]").val(num);
+		setTotal();
+	})
+	$(".orderdetail").on("click",".minu", function () {
+		var productid = $(this).prev().attr('productid');
+		var num = parseInt($(this).prev().val());
+		if(num>0) {
+			num--;
+			console.log(num);
+			if(num==0){
+				$(this).parent().parent().hide(1000);/*删除效果*/
+				$(this).parent().parent().remove();
+			}
+		}
+		$("input[productid ="+productid+" ]").val(num);
+		setTotal();
+	})
+	/*
+	*json
+	*/
+	function submitinfo(){
+		var infos =[];
+		$(".orderdetail>.cartgoods").each(function () {
+			var productid = $(this).children("div:last").children("input").attr("productid");
+			var proname = $(this).children("div:last").children("input").attr("proname");
+			var goodsnum = $(this).children("div:last").children("input").val();
+			var dj = $(this).children("div:last").children("input").attr("dj");
+			var info ={"productid":productid,"goodsnum":goodsnum,"proname":proname,"dj":dj};
+			infos.push(info);
+		})
+		$.cookie('golist',JSON.stringify(infos),{path:'/'});
+		location.href = "../../payPage";
+
+	}
+</script>
+</body>
+</html>
